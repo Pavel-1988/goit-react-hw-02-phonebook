@@ -15,21 +15,27 @@ export class App extends React.Component {
     filter: '',
   };
 
-  addContact = ({ name, number }) => {
-    const { contacts } = this.state;
-    const newContact = { id: nanoid(), name, number };
-    contacts.some(contact => contact.name === name)
-      ? Report.warning(
-          `${name}`,
-          ' is already in the contact.',
-        )
-      :
-      this.setState(({ contacts }) => ({
-          contacts: [newContact, ...contacts],
-        }
-      ));
-    };
+    addContact = ({ name, number }) => {
+      const newContact = {
+        id: nanoid(),
+        name,
+        number
+      };
 
+      const checkUniqe = this.state.contacts.filter(({ name }) => name.toLowerCase() === newContact.name.toLowerCase()
+      )
+
+      if (checkUniqe.length) {
+        Report.warning(
+          `${name}`,
+          'This user is already in the contact list.',
+          'OK')
+        return
+      }
+         this.setState(({ contacts }) => ({
+          contacts: [newContact, ...contacts],
+        }));
+  };
   
   getVisibleContacts = () => {
     const { contacts, filter } = this.state;
